@@ -38,28 +38,72 @@
     
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
+    const bornIn1500s = inventors.filter(inventor => inventor.year >= 1500 && inventor.year <= 1599);
+    console.table(bornIn1500s);                       // ^^ returns the result of these two conditions
 
-    // Array.prototype.map()
+    // another way - take in a function that loops through every single item in the array
+    const fifteen = inventors.filter(function(inventor) {
+      if (inventor.year >= 1500 && inventor.year <= 1599) {
+        return true; // means we keep the inventor object
+      } // else statement or false return statement not needed
+    });
+
+    // Array.prototype.map() - returns a new modified array of the SAME length
     // 2. Give us an array of the inventors first and last names
+    const fullNames = inventors.map(inventor => inventor.first + " " + inventor.last);
+    console.table(fullNames);
 
-    // Array.prototype.sort()
+    // Array.prototype.sort() - takes in 2 items at a time, returning -1 or 1 to bubble each item up and down in the array
     // 3. Sort the inventors by birthdate, oldest to youngest
+    const ordered = inventors.sort((firstPerson, secondPerson) => firstPerson.year > secondPerson.year ? 1 : -1);
+    console.table(ordered);
 
-    // Array.prototype.reduce()
+    // Array.prototype.reduce() - cleaner way to aggregate values of each object into a variable, like using a for-loop to add each person's year to a totalYears variable
     // 4. How many years did all the inventors live all together?
+    const totalYears = inventors.reduce((total, inventor) => {
+      return total + (inventor.passed - inventor.year); // keeps a running total from the last time the function was called
+    }, 0); // specifies the initial value of the running total
+    console.log(totalYears);
 
     // 5. Sort the inventors by years lived
+    const yearsLived = inventors.sort((firstPerson, secondPerson) => {
+      const firstAge = firstPerson.passed - firstPerson.year;
+      const secondAge = secondPerson.passed - secondPerson.year;
+      return firstAge > secondAge ? -1 : 1;
+    });
+    console.table(yearsLived);
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
-    // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+    // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris || opened the wikipedia page, typed this into the console!
 
+    // const category = document.querySelector(".mw-category"); 
+    // const links = Array.from(category.querySelectorAll("a")); // a. select all links on the page, convert NodeList to array
+    // const de = links
+    //             .map(link => link.textContent) // b. convert list of links into list of names
+    //             .filter(name => name.includes("de")); // c. filter the list for names that contain "de"
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+    const byLastName = people.sort((personA, personB) => {
+      const [lastA, firstA] = personA.split(", "); // destructure the array returned by split into two variables each representing an entry in the array
+      const [lastB, firstB] = personB.split(", ");
+      return lastA > lastB ? 1 : -1;
+    });
+    console.log(byLastName);
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+
+    const transportation = data.reduce(function(object, item) {
+      if (!object[item]) { // if object does not have the item property
+        object[item] = 0; // create that property
+      }
+
+      object[item]++; // increases the counter associated with the property of that item in the object
+      return object;
+    }, {}); // start with blank object
+    console.table(transportation);
 
   </script>
 </body>
