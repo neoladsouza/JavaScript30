@@ -27,6 +27,7 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -44,6 +45,11 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      flex: 1; /* each panel will evenly distribute the extra space amongst themselves */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -57,6 +63,28 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* when we toggle open-active class on an alement, it would bring it into view and out of view */
+
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -72,11 +100,12 @@
 
     .panel.open {
       font-size: 40px;
+      flex: 5; /* takes 5 times the amount of extra room as the rest of the flex items */
     }
 
   </style>
 
-
+  <!--Turn all these panels to be vertical, click on the middle word to expand a panel -->
   <div class="panels">
     <div class="panel panel1">
       <p>Hey</p>
@@ -106,7 +135,24 @@
   </div>
 
   <script>
+    // when we click on a panel, we toggle the open and open-active classes
+    const panels = document.querySelectorAll(".panel");
 
+    function toggleOpen() {
+      this.classList.toggle("open");
+    }
+
+    function toggleActive(e) {
+      // console.log(e.propertyName)
+      // 2 transitions occur upon click : font-size and flex-grow
+      if (e.propertyName.includes("flex")) {
+        this.classList.toggle("open-active");
+      }
+    }
+
+    panels.forEach(panel => panel.addEventListener("click", toggleOpen)); 
+    // using toggleOpen() would run it when the page loads, only need to pass a reference
+    panels.forEach(panel => panel.addEventListener("transitionend", toggleActive)); 
   </script>
 
 
