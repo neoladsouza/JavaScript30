@@ -7,7 +7,59 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
-<script>
+<script> // similar to Microsoft Paint
+  const canvas = document.querySelector("#draw");
+  const context = canvas.getContext("2d"); // what we draw on
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // base set-up
+  context.strokeStyle = "#7A93BA";
+  context.lineJoin = "round";
+  context.lineCap = "round";
+  context.lineWidth = 100;
+  context.globalCompositeOperation = "multiply"; // when lines intersect
+
+  let isDrawing = false, direction = true;
+  let lastX = 0, lastY = 0, hue = 0;
+
+  // click and drag functionality
+  function draw(e) {
+    if (!isDrawing) { return; } // stop function from running (triggered during mouseup event)
+    
+    // actually drawing
+    console.log(e);
+    context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    context.beginPath();
+    context.moveTo(lastX, lastY); // starting point
+    context.lineTo(e.offsetX, e.offsetY); // ending point
+    context.stroke();
+
+    [lastX, lastY] = [e.offsetX, e.offsetY]; // every line starts off from where the previous line ended
+    
+    hue++; // increment the hue to create rainbow pen
+    if (hue >= 360) { hue = 0; }
+
+    if (context.lineWidth >= 150 || context.lineWidth <= 15) {
+      direction = !direction; // switch directions to fade out
+    }
+
+    if (direction) {
+      context.lineWidth++;
+    } else {
+      context.lineWidth--;
+    }
+    
+  }
+
+  canvas.addEventListener("mousedown", (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY]; // update starting position with mousedown position
+  }); // should happen before draw gets called
+
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", () => isDrawing = false);
+  canvas.addEventListener("mouseout", () => isDrawing = false); // for when mouse leaves the window, but hasn't triggered mouseup
 </script>
 
 <style>
