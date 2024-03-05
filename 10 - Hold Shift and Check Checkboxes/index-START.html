@@ -97,6 +97,32 @@
   </div>
 
 <script>
+  // 1. select all checkboxes, need to know when they are checked
+  const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+
+  let lastChecked;
+  function handleCheck(e) {
+    // check if they had the shift key down, and check that they are checking the checkbox
+    let inBetween = false;
+    if (e.shiftKey && this.checked) {
+      // loop through checkboxes, find the first one clicked and set subsequent boxes to checked until we reach the last checkbox (second clicked)
+      // NOT dependent on HTML
+      checkboxes.forEach(checkBox => {
+        console.log(checkBox);
+        if (checkBox === this || checkBox === lastChecked) {
+          inBetween = !inBetween;
+        }
+
+        if (inBetween) {
+          checkBox.checked = true;
+        }
+      });
+    }
+    
+    lastChecked = this;
+  }
+
+  checkboxes.forEach(checkbox => checkbox.addEventListener("click", handleCheck));
 </script>
 </body>
 </html>
