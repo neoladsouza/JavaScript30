@@ -74,6 +74,8 @@ body {
   background: rgba(0,0,0,0.1);
 }
 
+/* when we hover over the div, we translate it up to show it */
+
 .player:hover .player__controls {
   transform: translateY(0);
 }
