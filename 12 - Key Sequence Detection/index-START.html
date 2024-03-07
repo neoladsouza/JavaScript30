@@ -7,6 +7,22 @@
     <link rel="icon" href="https://fav.farm/🔥" />
   </head>
   <body>
-    <script></script>
+    <script>
+      // user presses a series of keys, we detect and make something happen if the sequence is right
+      const pressed = []; // stores pressed keys
+      const secretCode = 'neola';
+
+      window.addEventListener("keyup", (e) => {
+        pressed.push(e.key);
+        // start from the end of the array, go back as many entries as there are characters in secret code
+        // go back 6 entries, and trim from there to keep the 5 most recent keys
+        pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);
+        // check to see if it matches by converting array to string
+        if (pressed.join('').includes(secretCode)) {
+          console.log("YUH!");
+          cornify_add();
+        }
+      })
+    </script>
   </body>
 </html>
