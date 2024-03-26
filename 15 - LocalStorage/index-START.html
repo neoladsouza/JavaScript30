@@ -26,10 +26,59 @@
     </form>
   </div>
 
+
 <script>
+  // CHALLENGE: make a Clear All, Check All, Uncheck All
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  // ON PAGE LOAD, CHECK IF ITEMS KEY EXISTS IN LOCAL STORAGE, since all this code runs again when page reloads
+  const items = JSON.parse(localStorage.getItem("items")) || []; // if items key isn't there, fall back to empty array
+
+  function addItem(e) {
+    e.preventDefault(); // prevent page from reloading
+    const text = (this.querySelector("[name=item]")).value; // this is the form element, look inside for element with name attribute of item
+    const item = {
+      text: text,
+      done: false
+    }
+    items.push(item);
+    populateList(items, itemsList);
+    // ADD ITEM TO LOCAL STORAGE
+    localStorage.setItem('items', JSON.stringify(items)); // localStorage only accepts strings
+    this.reset(); // reset form
+  }
+
+  function populateList(plates = [], platesList) { // pass in data (default value is an empty object - in case we forget to pass something) and a place to put the HTML
+    // loop through each item in the array, and map it to a string representing the HTML
+    platesList.innerHTML = plates.map((plate, i) => {
+      // use of ternary property to apply checked status based on done property
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''}> 
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `;
+    }).join(''); // take the array map() returns and make it into one huge string
+  }
+
+  function toggleDone(e) { // e.target tells you what HTML you're clicking
+    if (!e.target.matches('input')) return; // only care about input elements
+    // find the item that was checked in the items array
+    const element = e.target;
+    const index = element.dataset.index;
+    items[index].done = !items[index].done; // toggles property
+
+    // store in local storage, visually update
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener("submit", addItem);
+  // EVENT DELEGATION: rather than listening for a click or a change on the checkboxes, look for somebody who is on the page at the time of listening
+  // listen for a click on the <ul>, and if a <li> was clicked, pass the click event to the <li>
+  // this way, we can add as many checkboxes as we want, and because they're all children of the <ul>, the event listener will work
+  itemsList.addEventListener("click", toggleDone);
+  populateList(items, itemsList); // everytime page loads, use data from local storage
 
 </script>
 
